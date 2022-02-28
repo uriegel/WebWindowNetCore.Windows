@@ -16,11 +16,11 @@ struct ApiMessage
     public IntPtr WParam;
     public IntPtr LParam;
     public UInt32 Time;
-    public Point MousePoint;
+    public MousePoint MousePoint;
 }
 
 [StructLayout(LayoutKind.Sequential)]
-struct Point
+struct MousePoint
 {
     public int X;
     public int Y;

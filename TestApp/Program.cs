@@ -9,7 +9,15 @@ static class Program
     static void Main()
     {
         var window = new WebWindow();
-        window.Initialize(new() { Title = "Das ist das Webview-Fenster", Url="http://www.microsoft.com"});
-        window.Execute();
+        window.Initialize(new() { 
+            Title = "Web View 😎😎👌", 
+            Url="https://www.microsoft.com", 
+            Organization = "uriegel.de",
+            Application="WebWindowNetCore", 
+            DebuggingEnabled = true,
+            FullscreenEnabled = true,
+            SaveWindowSettings = true
+        });
+        window.Execute();        
     }
 }
