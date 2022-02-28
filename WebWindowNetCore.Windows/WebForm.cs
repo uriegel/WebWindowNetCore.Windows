@@ -4,7 +4,7 @@ namespace WebWindowNetCore;
 
 public partial class WebForm : Form
 {
-    public WebForm(Configuration configuration, Settings settings, string settingsFile) 
+    public WebForm(Configuration configuration, WebWindowBase.Settings settings, ISaveSettings saveSettings) 
     {
         this.webView = new Microsoft.Web.WebView2.WinForms.WebView2();
         ((System.ComponentModel.ISupportInitialize)(this.webView)).BeginInit();
@@ -46,24 +46,22 @@ public partial class WebForm : Form
         ((System.ComponentModel.ISupportInitialize)(this.webView)).EndInit();
         this.ResumeLayout(false);
 
-        Settings recentSettings = settings;
+        WebWindowBase.Settings recentSettings = settings;
         this.FormClosed += (s, e) =>
         {
             if (configuration.SaveWindowSettings == true)
             {
                 var settings = this.WindowState != FormWindowState.Maximized 
-                    ? new Settings(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height, this.WindowState == FormWindowState.Maximized)
+                    ? new WebWindowBase.Settings(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height, this.WindowState == FormWindowState.Maximized)
                     : recentSettings with { isMaximized = true };
-                var json = JsonSerializer.Serialize(settings);
-                using var writer = new StreamWriter(File.Create(settingsFile));
-                writer.Write(json);
+                saveSettings.SaveSettings(settings);
             }
         };
 
         this.Resize += (s, e) =>
         {
             if (configuration.SaveWindowSettings == true && this.WindowState != FormWindowState.Maximized)
-                recentSettings = new Settings(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height, this.WindowState == FormWindowState.Maximized);
+                recentSettings = new WebWindowBase.Settings(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height, this.WindowState == FormWindowState.Maximized);
         };
 
     }
