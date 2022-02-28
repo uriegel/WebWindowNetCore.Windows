@@ -4,7 +4,6 @@ using System.Text.Json;
 namespace WebWindowNetCore;
 
 public record Settings(int x, int y, int width, int height, bool isMaximized);
-
 public class WebWindow : IWebWindow
 {
     public void Initialize(Configuration configuration) => this.configuration = configuration ?? new Configuration();
