@@ -11,4 +11,10 @@
     <ProjectReference Include="..\WebWindowNetCore.Windows\WebWindowNetCore.Windows.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+	  <EmbeddedResource Include=".\resources\app.ico" >
+		  <LogicalName>appicon</LogicalName>
+	  </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

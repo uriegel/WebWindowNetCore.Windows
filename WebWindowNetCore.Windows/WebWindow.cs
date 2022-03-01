@@ -5,7 +5,12 @@ namespace WebWindowNetCore;
 
 public abstract class WebWindowBase
 {
-    public record Settings(int x, int y, int width, int height, bool isMaximized);
+    JsonSerializerOptions serializeOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    };
+
+    public record Settings(int X, int Y, int Width, int Height, bool IsMaximized);
 
     public WebWindowBase(Configuration configuration) 
         => this.configuration = configuration;
@@ -29,7 +34,7 @@ public abstract class WebWindowBase
                 var settingsString = reader.ReadToEnd();
                 if (settingsString?.Length > 0)
                 {
-                    var s = JsonSerializer.Deserialize<Settings>(settingsString);
+                    var s = JsonSerializer.Deserialize<Settings>(settingsString, serializeOptions);
                     if (s != null)
                         settings = s;
                 }
@@ -42,7 +47,7 @@ public abstract class WebWindowBase
 
     protected void SaveSettings(WebWindowBase.Settings settings)
     {
-        var json = JsonSerializer.Serialize(settings);
+        var json = JsonSerializer.Serialize(settings, serializeOptions);
         using var writer = new StreamWriter(File.Create(settingsFile));
         writer.Write(json);
     }

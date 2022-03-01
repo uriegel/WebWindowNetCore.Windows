@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json;
 
 namespace WebWindowNetCore;
@@ -31,13 +32,13 @@ public partial class WebForm : Form
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.webView.Size = new System.Drawing.Size(799, 451);
         this.ClientSize = new System.Drawing.Size(800, 450);
-        this.Size = new System.Drawing.Size(settings.width, settings.height);
-        if (settings.x != -1 && settings.y != -1)
+        this.Size = new System.Drawing.Size(settings.Width, settings.Height);
+        if (settings.X != -1 && settings.Y != -1)
         {
             this.StartPosition = FormStartPosition.Manual;
-            this.Location = new System.Drawing.Point(settings.x, settings.y);
+            this.Location = new System.Drawing.Point(settings.X, settings.Y);
         }
-        if (settings.isMaximized)
+        if (settings.IsMaximized)
             this.WindowState = FormWindowState.Maximized;
 
         this.Controls.Add(this.webView);
@@ -53,10 +54,15 @@ public partial class WebForm : Form
             {
                 var settings = this.WindowState != FormWindowState.Maximized 
                     ? new WebWindowBase.Settings(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height, this.WindowState == FormWindowState.Maximized)
-                    : recentSettings with { isMaximized = true };
+                    : recentSettings with { IsMaximized = true };
                 saveSettings.SaveSettings(settings);
             }
         };
+
+        var assembly = Assembly.GetEntryAssembly();
+        var stream = assembly!.GetManifestResourceStream("appicon");
+        if (stream != null)
+            this.Icon = new Icon(stream);
 
         this.Resize += (s, e) =>
         {
