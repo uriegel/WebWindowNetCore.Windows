@@ -3,7 +3,7 @@ Dependencies for Windows for package WebWindowNetCore
 
 ## TODO
 
-* check if single file exe possible
+* check if single file exe possible: yes with webview2 handler in resource
 * Builder fluent
 * .build()
 * .run()
