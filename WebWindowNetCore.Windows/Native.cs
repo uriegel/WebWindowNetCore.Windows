@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace WebWindowNetCore;
+namespace WebWindow;
 
 [StructLayout(LayoutKind.Sequential)]
 struct ApiMessage
