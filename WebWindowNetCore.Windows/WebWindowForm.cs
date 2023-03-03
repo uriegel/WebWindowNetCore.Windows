@@ -1,6 +1,6 @@
 using Microsoft.Web.WebView2.WinForms;
 
-namespace WebWindow;
+namespace WebWindowNetCore.Windows;
 
 class WebWindowForm : Form
 {

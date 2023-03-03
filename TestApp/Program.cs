@@ -1,4 +1,4 @@
-﻿using WebWindow;
+﻿using WebWindowNetCore.Windows;
 
 static class Program
 {

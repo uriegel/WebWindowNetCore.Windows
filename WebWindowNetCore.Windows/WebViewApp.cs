@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace WebWindow;
+namespace WebWindowNetCore.Windows;
 
 public static class WebViewApp
 {
