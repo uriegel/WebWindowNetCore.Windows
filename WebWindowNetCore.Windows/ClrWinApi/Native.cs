@@ -1,9 +1,9 @@
 using System.Runtime.InteropServices;
 
-namespace WebWindowNetCore.Windows;
+namespace ClrWinApi;
 
 [StructLayout(LayoutKind.Sequential)]
-struct ApiMessage
+public struct ApiMessage
 {
     /// <summary>
     /// Das Fenster, welches die Nachricht bekommen soll/hat
@@ -20,9 +20,18 @@ struct ApiMessage
 }
 
 [StructLayout(LayoutKind.Sequential)]
-struct MousePoint
-{
+public struct MousePoint
+{ 
     public int X;
     public int Y;
 }
 
+public static class Api
+{
+    [DllImport("user32.dll")]
+    public static extern void PostQuitMessage(int exitCode);
+    [DllImport("user32.dll")]
+    public static extern sbyte GetMessage(out ApiMessage message, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+    [DllImport("user32.dll")]
+    public static extern IntPtr DispatchMessage([In] ref ApiMessage message);
+}
