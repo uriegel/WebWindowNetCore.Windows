@@ -2,9 +2,5 @@
 Dependencies for Windows for package WebWindowNetCore
 
 ## TODO
-
-* check if single file exe possible: yes with webview2 handler in resource
-* Builder fluent
-* .build()
-* .run()
+* Single file exe: extract webviewhandler.dll, temp folder not in program folder
 * take transparent drag source window from test project

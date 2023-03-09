@@ -33,6 +33,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1587.40" />
+		<PackageReference Include="WebWindowNetCore" Version="0.0.1-alpha.8" />
 	</ItemGroup>
 
 </Project>
