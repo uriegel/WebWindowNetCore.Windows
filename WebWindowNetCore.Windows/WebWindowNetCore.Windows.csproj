@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWindowsForms>true</UseWindowsForms>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Version>0.0.1-alpha.5</Version>
@@ -32,8 +33,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CSTools" Version="0.0.1-alpha.4" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1587.40" />
 		<PackageReference Include="WebWindowNetCore" Version="0.0.1-alpha.8" />
 	</ItemGroup>
+
+  	<ItemGroup>
+    	<EmbeddedResource Include="./WebView2Loader.dll">
+      		<LogicalName>binaries/webviewloader</LogicalName>
+    	</EmbeddedResource>
+  </ItemGroup>	
 
 </Project>

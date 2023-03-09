@@ -34,4 +34,6 @@ public static class Api
     public static extern sbyte GetMessage(out ApiMessage message, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
     [DllImport("user32.dll")]
     public static extern IntPtr DispatchMessage([In] ref ApiMessage message);
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+    public static extern IntPtr LoadLibrary(string filename);
 }

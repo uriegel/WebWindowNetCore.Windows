@@ -16,9 +16,9 @@ public class WebView : WebWindowNetCore.WebView
     public static WebViewBuilder Create()
         => new WebViewBuilder();
 
-    public override int Run(string gtkId = "de.uriegel.WebViewNetCore")
+    public override int Run(string gtkId = "")
     {
-        var webForm = new WebWindowForm(settings);
+        var webForm = new WebWindowForm(settings, appDataPath);
         webForm.Show();
         webForm.FormClosed += (s, e) => PostQuitMessage(0);
 
@@ -111,8 +111,12 @@ public class WebView : WebWindowNetCore.WebView
         //});
 
     internal WebView(WebViewBuilder builder)
-        => settings = builder.Data;
-
+    {
+        appDataPath = builder.AppDataPath;
+        settings = builder.Data;
+    }
+        
+    string appDataPath;
     WebViewSettings? settings;
 
     bool saveBounds;

@@ -1,3 +1,4 @@
+using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using WebWindowNetCore.Data;
 
@@ -5,7 +6,7 @@ namespace WebWindowNetCore.Windows;
 
 class WebWindowForm : Form
 {
-    public WebWindowForm(WebViewSettings? settings) 
+    public WebWindowForm(WebViewSettings? settings, string appDataPath) 
     {
         this.webView = new WebView2();
         ((System.ComponentModel.ISupportInitialize)(this.webView)).BeginInit();
@@ -25,7 +26,6 @@ class WebWindowForm : Form
         this.webView.Size = new System.Drawing.Size(798, 449);
         this.webView.TabIndex = 0;
         this.webView.ZoomFactor = 1D;
-        this.webView.Source = new System.Uri(settings?.Url ?? "");
         // 
         // Form1
         // 
@@ -68,6 +68,16 @@ class WebWindowForm : Form
         // };
 
         //this.webView.Size = new System.Drawing.Size(settings!.Width, settings!.Height);
+    
+        StartWebviewInit();
+
+        async void StartWebviewInit()
+        {
+            var enf = await  CoreWebView2Environment.CreateAsync(null, appDataPath);
+            await webView.EnsureCoreWebView2Async(enf);
+            webView.Source = new System.Uri(settings?.Url ?? "");
+            //webView.CoreWebView2.AddHostObjectToScript("WV_File", new WV_File(this));
+        }
     }
 
     WebView2 webView;
