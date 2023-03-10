@@ -12,44 +12,11 @@ WebView
     .Build()
     .Run("de.uriegel.Commander");    
 
-// TODO SaveBounds
 // TODO take transparent drag source window from test project
 
 /*
 using System.Runtime.InteropServices;
 
-namespace WebView2Form;
-
-public partial class Form1 : Form
-{
-    [ComVisible(true)]
-    public class WV_File
-    {
-        public WV_File(Form1 parent)
-        {
-            this.parent = parent;
-        }
-        public void DragDropFile()
-        {
-            var overlay = new Overlay(parent);
-            overlay.Top = parent.Top;
-            overlay.Left = parent.Left;
-            overlay.Width= parent.Width / 2;
-            overlay.Height = parent.Height / 2;
-            try
-            {
-                parent.Controls.Add(overlay);
-            }
-            catch (Exception e)
-            {
-
-            }
-            overlay.Show(parent);
-        }
-
-        Form1 parent;
-    }
-}
 
 */
 /*

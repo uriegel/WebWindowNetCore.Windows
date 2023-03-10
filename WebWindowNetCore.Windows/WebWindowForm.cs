@@ -4,8 +4,16 @@ using WebWindowNetCore.Data;
 
 namespace WebWindowNetCore.Windows;
 
-class WebWindowForm : Form
+public class WebWindowForm : Form
 {
+    public void Init(int width, int height, bool maximize)  
+    {
+        ClientSize = new System.Drawing.Size(width, height);
+        if (maximize)
+            WindowState = FormWindowState.Maximized;
+        
+    }
+    
     public WebWindowForm(WebViewSettings? settings, string appDataPath) 
     {
         webView = new WebView2();
@@ -30,7 +38,7 @@ class WebWindowForm : Form
         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
         this.WindowState = FormWindowState.Minimized;
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-    this.ClientSize = new System.Drawing.Size(80, 60);
+        
         // if (settings.x != -1 && settings.y != -1)
         // {
         //     this.StartPosition = FormStartPosition.Manual;
@@ -46,39 +54,42 @@ class WebWindowForm : Form
         ((System.ComponentModel.ISupportInitialize)(this.webView)).EndInit();
         this.ResumeLayout(false);
 
-//        WebWindowBase.Settings recentSettings = settings;
-        // this.FormClosed += (s, e) =>
-        // {
-        //     if (configuration.SaveWindowSettings == true)
-        //     {
-        //         var settings = this.WindowState != FormWindowState.Maximized 
-        //             ? new WebWindowBase.Settings(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height, this.WindowState == FormWindowState.Maximized)
-        //             : recentSettings with { isMaximized = true };
-        //         saveSettings.SaveSettings(settings);
-        //     }
-        // };
+        this.Resize += async (s, e) =>
+        {
+            if (initialized && settings?.SaveBounds == true) {
+                if (this.WindowState != FormWindowState.Maximized)
+                    await webView.ExecuteScriptAsync(
+                        $$"""
+                            localStorage.setItem('window-bounds', JSON.stringify({width: {{Width}}, height: {{Height}}}))
+                            localStorage.setItem('isMaximized', false)
+                        """);
+                else
+                    await webView.ExecuteScriptAsync($"localStorage.setItem('isMaximized', true)");
+            }
+        };
 
-        // this.Resize += (s, e) =>
-        // {
-        //     if (configuration.SaveWindowSettings == true && this.WindowState != FormWindowState.Maximized)
-        //         recentSettings = new WebWindowBase.Settings(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height, this.WindowState == FormWindowState.Maximized);
-        // };
-
-        //this.webView.Size = new System.Drawing.Size(settings!.Width, settings!.Height);
-    
         StartWebviewInit();
 
         async void StartWebviewInit()
         {
             var enf = await  CoreWebView2Environment.CreateAsync(null, appDataPath);
             await webView.EnsureCoreWebView2Async(enf);
+            webView.CoreWebView2.AddHostObjectToScript("Callback", new Callback(this));
             webView.Source = new System.Uri(settings?.Url ?? "");
-            //webView.CoreWebView2.AddHostObjectToScript("WV_File", new WV_File(this));
-            ClientSize = new System.Drawing.Size(settings?.Width ?? 800, settings?.Height ?? 600);
             WindowState = FormWindowState.Normal;
-            Visible = true;    
+            initialized = true;
+            await webView.ExecuteScriptAsync(
+                $$"""
+                    const callback = chrome.webview.hostObjects.Callback
+                    callback.Ready()
+                    const bounds = JSON.parse(localStorage.getItem('window-bounds') || '{}')
+                    const isMaximized = localStorage.getItem('isMaximized')
+                    callback.Init(bounds.width || {{settings?.Width ?? 800}}, bounds.height || {{settings?.Height ?? 600}}, isMaximized == 'true')
+                """);
         }
     }
 
+
     WebView2 webView;
+    bool initialized;
 }
