@@ -8,22 +8,19 @@ class WebWindowForm : Form
 {
     public WebWindowForm(WebViewSettings? settings, string appDataPath) 
     {
-        this.webView = new WebView2();
+        webView = new WebView2();
         ((System.ComponentModel.ISupportInitialize)(this.webView)).BeginInit();
-        this.SuspendLayout();
+        SuspendLayout();
         // 
         // webView
         // 
         this.webView.AllowExternalDrop = true;
-        this.webView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-        | System.Windows.Forms.AnchorStyles.Left) 
-        | System.Windows.Forms.AnchorStyles.Right)));
         this.webView.CreationProperties = null;
         this.webView.DefaultBackgroundColor = System.Drawing.Color.White;
         this.webView.Location = new System.Drawing.Point(0, 0);
         this.webView.Margin = new System.Windows.Forms.Padding(0);
         this.webView.Name = "webView";
-        this.webView.Size = new System.Drawing.Size(798, 449);
+        this.webView.Dock = DockStyle.Fill;
         this.webView.TabIndex = 0;
         this.webView.ZoomFactor = 1D;
         // 
@@ -31,10 +28,9 @@ class WebWindowForm : Form
         // 
         //this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+        this.WindowState = FormWindowState.Minimized;
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        //this.webView.Size = new System.Drawing.Size(799, 451);
-        this.ClientSize = new System.Drawing.Size(800, 450);
-        //this.Size = new System.Drawing.Size(600, 800);
+    this.ClientSize = new System.Drawing.Size(80, 60);
         // if (settings.x != -1 && settings.y != -1)
         // {
         //     this.StartPosition = FormStartPosition.Manual;
@@ -45,6 +41,7 @@ class WebWindowForm : Form
 
         this.Controls.Add(this.webView);
         this.Name = "WebWindow";
+
         this.Text = settings?.Title;
         ((System.ComponentModel.ISupportInitialize)(this.webView)).EndInit();
         this.ResumeLayout(false);
@@ -77,6 +74,9 @@ class WebWindowForm : Form
             await webView.EnsureCoreWebView2Async(enf);
             webView.Source = new System.Uri(settings?.Url ?? "");
             //webView.CoreWebView2.AddHostObjectToScript("WV_File", new WV_File(this));
+            ClientSize = new System.Drawing.Size(settings?.Width ?? 800, settings?.Height ?? 600);
+            WindowState = FormWindowState.Normal;
+            Visible = true;    
         }
     }
 

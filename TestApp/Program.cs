@@ -2,7 +2,7 @@
 
 WebView
     .Create()
-    .InitialBounds(600, 800)
+    .InitialBounds(800, 600)
     .Title("WebView Test")
     .SaveBounds()
     .Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
@@ -12,7 +12,6 @@ WebView
     .Build()
     .Run("de.uriegel.Commander");    
 
-// TODO set initial bounds
 // TODO SaveBounds
 // TODO take transparent drag source window from test project
 
