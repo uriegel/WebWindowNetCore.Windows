@@ -1,3 +1,4 @@
+using CsTools.Extensions;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using WebWindowNetCore.Data;
@@ -35,6 +36,10 @@ public class WebWindowForm : Form
         // Form1
         // 
         //this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+        
+        if (settings?.HttpSettings?.ResourceFavicon != null)
+            this.Icon = new System.Drawing.Icon(Resources.Get (settings.HttpSettings.ResourceFavicon));
+
         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
         this.WindowState = FormWindowState.Minimized;
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -75,7 +80,10 @@ public class WebWindowForm : Form
             var enf = await  CoreWebView2Environment.CreateAsync(null, appDataPath);
             await webView.EnsureCoreWebView2Async(enf);
             webView.CoreWebView2.AddHostObjectToScript("Callback", new Callback(this));
-            webView.Source = new System.Uri(settings?.Url ?? "");
+            if (settings?.Url != null)
+                webView.Source = new System.Uri(settings?.Url ?? "");
+            if (settings?.HttpSettings?.WebrootUri != null)
+                webView.Source = new System.Uri($"http://localhost:{settings?.HttpSettings?.Port ?? 80}{settings?.HttpSettings?.WebrootUri}/{settings?.HttpSettings?.DefaultHtml}");
             WindowState = FormWindowState.Normal;
             initialized = true;
             await webView.ExecuteScriptAsync(
