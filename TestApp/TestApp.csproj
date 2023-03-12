@@ -21,8 +21,11 @@
     <EmbeddedResource Include="../webroot/css/styles.css">
       <LogicalName>webroot/css/styles.css</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="./favicon.ico">
-      <LogicalName>favicon</LogicalName>
+    <EmbeddedResource Include="../webroot/scripts/script.js">
+      <LogicalName>webroot/scripts/script.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="./icon.ico">
+      <LogicalName>icon</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 

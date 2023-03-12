@@ -10,6 +10,8 @@ public class Callback
     public void Init(int width, int height, bool maximize) 
         => parent.Init(width, height, maximize);
 
+    public void ShowDevtools() => parent.ShowDevtools();
+
     // public void DragDropFile()
     // {
     //     var overlay = new Overlay(parent);

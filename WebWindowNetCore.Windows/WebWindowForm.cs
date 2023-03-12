@@ -14,6 +14,9 @@ public class WebWindowForm : Form
             WindowState = FormWindowState.Maximized;
         
     }
+
+    public void ShowDevtools()
+        => webView.CoreWebView2.OpenDevToolsWindow();
     
     public WebWindowForm(WebViewSettings? settings, string appDataPath) 
     {
@@ -37,21 +40,13 @@ public class WebWindowForm : Form
         // 
         //this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         
-        if (settings?.HttpSettings?.ResourceFavicon != null)
-            this.Icon = new System.Drawing.Icon(Resources.Get (settings.HttpSettings.ResourceFavicon));
+        if (settings?.ResourceIcon != null)
+            this.Icon = new System.Drawing.Icon(Resources.Get(settings.ResourceIcon));
 
         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
         this.WindowState = FormWindowState.Minimized;
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         
-        // if (settings.x != -1 && settings.y != -1)
-        // {
-        //     this.StartPosition = FormStartPosition.Manual;
-        //     this.Location = new System.Drawing.Point(settings.x, settings.y);
-        // }
-        // if (settings.isMaximized)
-        //     this.WindowState = FormWindowState.Maximized;
-
         this.Controls.Add(this.webView);
         this.Name = "WebWindow";
 
@@ -80,10 +75,22 @@ public class WebWindowForm : Form
             var enf = await  CoreWebView2Environment.CreateAsync(null, appDataPath);
             await webView.EnsureCoreWebView2Async(enf);
             webView.CoreWebView2.AddHostObjectToScript("Callback", new Callback(this));
+            webView.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
+            webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             if (settings?.Url != null)
                 webView.Source = new System.Uri(settings?.Url ?? "");
-            if (settings?.HttpSettings?.WebrootUri != null)
-                webView.Source = new System.Uri($"http://localhost:{settings?.HttpSettings?.Port ?? 80}{settings?.HttpSettings?.WebrootUri}/{settings?.HttpSettings?.DefaultHtml}");
+            if (settings?.HttpSettings?.WebrootUrl != null)
+            {
+#if DEBUG
+                var uri = string.IsNullOrEmpty(settings?.DebugUrl)
+                    ? $"http://localhost:{settings?.HttpSettings?.Port ?? 80}{settings?.HttpSettings?.WebrootUrl}/{settings?.HttpSettings?.DefaultHtml}"
+                    : settings?.DebugUrl!;
+#else
+                var uri = $"http://localhost:{settings?.HttpSettings?.Port ?? 80}{settings?.HttpSettings?.WebrootUrl}/{settings?.HttpSettings?.DefaultHtml}";
+#endif                
+                webView.Source = new System.Uri(uri);
+            }
+
             WindowState = FormWindowState.Normal;
             initialized = true;
             await webView.ExecuteScriptAsync(
@@ -94,6 +101,28 @@ public class WebWindowForm : Form
                     const isMaximized = localStorage.getItem('isMaximized')
                     callback.Init(bounds.width || {{settings?.Width ?? 800}}, bounds.height || {{settings?.Height ?? 600}}, isMaximized == 'true')
                 """);
+            if (settings?.DevTools == true)
+                await webView.ExecuteScriptAsync(
+                    """ 
+                        function webViewShowDevTools() {
+                            callback.ShowDevtools()
+                        }
+                    """);
+            if ((settings?.HttpSettings?.RequestDelegates?.Length ?? 0) > 0)
+                await webView.ExecuteScriptAsync(
+                    """ 
+                        async function webViewRequest(method, input) {
+
+                            const msg = {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(input)
+                            }
+
+                            const response = await fetch(`/request/${method}`, msg) 
+                            return await response.json() 
+                        }
+                    """);                
         }
     }
 
