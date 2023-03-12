@@ -77,6 +77,25 @@ public class WebWindowForm : Form
             webView.CoreWebView2.AddHostObjectToScript("Callback", new Callback(this));
             webView.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            
+            webView.CoreWebView2.ContainsFullScreenElementChanged += (objs, args) =>
+            {
+                if (webView.CoreWebView2.ContainsFullScreenElement)
+                {
+                    this.TopMost = true;
+                    this.FormBorderStyle = FormBorderStyle.None;
+                    this.WindowState = FormWindowState.Maximized;
+                    Taskbar.Hide();
+                }
+                else
+                {
+                    this.TopMost = false;
+                    this.WindowState = FormWindowState.Normal;
+                    this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+                    Taskbar.Show();
+                }
+            };
+                
             if (settings?.Url != null)
                 webView.Source = new System.Uri(settings?.Url ?? "");
             if (settings?.HttpSettings?.WebrootUrl != null)
