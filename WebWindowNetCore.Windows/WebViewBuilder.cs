@@ -4,9 +4,9 @@ using WebWindowNetCore.Data;
 
 using static ClrWinApi.Api;
 
-namespace WebWindowNetCore.Windows;
+namespace WebWindowNetCore;
 
-public class WebViewBuilder : WebWindowNetCore.WebViewBuilder
+public class WebViewBuilder : WebWindowNetCore.Base.WebViewBuilder
 {
     public override WebView Build() => new WebView(this);
 
