@@ -4,7 +4,7 @@ using WebWindowNetCore.Data;
 
 using static ClrWinApi.Api;
 
-namespace WebWindowNetCore.Windows;
+namespace WebWindowNetCore;
 
 public class WebViewBuilder : WebWindowNetCore.Base.WebViewBuilder
 {

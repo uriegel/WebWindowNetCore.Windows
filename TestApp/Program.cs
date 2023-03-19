@@ -1,4 +1,4 @@
-﻿using WebWindowNetCore.Windows;
+﻿using WebWindowNetCore;
 
 var sseEventSource = WebView.CreateEventSource<Event>();
 StartEvents(sseEventSource.Send);

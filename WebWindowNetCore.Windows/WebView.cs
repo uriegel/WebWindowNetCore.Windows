@@ -1,7 +1,7 @@
 using WebWindowNetCore.Data;
 using static ClrWinApi.Api;
 
-namespace WebWindowNetCore.Windows;
+namespace WebWindowNetCore;
 
 enum Action
 {

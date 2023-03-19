@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace WebWindowNetCore.Windows;
+namespace WebWindowNetCore;
 
 [ComVisible(true)]
 public class Callback

@@ -3,7 +3,7 @@ using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using WebWindowNetCore.Data;
 
-namespace WebWindowNetCore.Windows;
+namespace WebWindowNetCore;
 
 public class WebWindowForm : Form
 {
