@@ -11,7 +11,7 @@ enum Action
 
 record ScriptAction(Action Action, int? Width, int? Height, bool? IsMaximized);
 
-public class WebView : WebWindowNetCore.WebView
+public class WebView : WebWindowNetCore.Base.WebView
 {
     public static WebViewBuilder Create()
         => new WebViewBuilder();
