@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using CsTools.Extensions;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
@@ -96,19 +97,12 @@ public class WebWindowForm : Form
                 }
             };
                 
-            if (settings?.Url != null)
-                webView.Source = new System.Uri(settings?.Url ?? "");
-            if (settings?.HttpSettings?.WebrootUrl != null)
-            {
-#if DEBUG
-                var uri = string.IsNullOrEmpty(settings?.DebugUrl)
-                    ? $"http://localhost:{settings?.HttpSettings?.Port ?? 80}{settings?.HttpSettings?.WebrootUrl}/{settings?.HttpSettings?.DefaultHtml}"
-                    : settings?.DebugUrl!;
-#else
-                var uri = $"http://localhost:{settings?.HttpSettings?.Port ?? 80}{settings?.HttpSettings?.WebrootUrl}/{settings?.HttpSettings?.DefaultHtml}";
-#endif                
-                webView.Source = new System.Uri(uri);
-            }
+            var url = Debugger.IsAttached && !string.IsNullOrEmpty(settings?.DebugUrl)
+                ? settings?.DebugUrl
+                : settings?.Url != null
+                ? settings.Url
+                : $"http://localhost:{settings?.HttpSettings?.Port ?? 80}{settings?.HttpSettings?.WebrootUrl}/{settings?.HttpSettings?.DefaultHtml}";
+            webView.Source = new System.Uri(url + settings?.Query ?? "");
 
             WindowState = FormWindowState.Normal;
             initialized = true;
