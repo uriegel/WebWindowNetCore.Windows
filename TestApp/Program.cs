@@ -11,7 +11,7 @@ WebView
     .Title("WebView Test")
     .ResourceIcon("icon")
     .SaveBounds()
-    .DebugUrl("http://localhost:3000")
+    //.DebugUrl("http://localhost:3000")
     .Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
     .ConfigureHttp(http => http
         .ResourceWebroot("webroot", "/web")
