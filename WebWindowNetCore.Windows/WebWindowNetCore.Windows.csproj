@@ -6,9 +6,9 @@
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>3.1.0</Version>
-		<FileVersion>3.1.0.0</FileVersion>
-		<AssemblyVersion>3.1.0.0</AssemblyVersion>
+		<Version>3.1.1</Version>
+		<FileVersion>3.1.1.0</FileVersion>
+		<AssemblyVersion>3.1.1.0</AssemblyVersion>
 		<Authors>Uwe Riegel</Authors>
 		<Company>Uwe Riegel</Company>
 		<Copyright>Uwe Riegel</Copyright>

@@ -11,10 +11,9 @@ enum Action
 
 record ScriptAction(Action Action, int? Width, int? Height, bool? IsMaximized);
 
-public class WebView : WebWindowNetCore.Base.WebView
+public class WebView : Base.WebView
 {
-    public static WebViewBuilder Create()
-        => new WebViewBuilder();
+    public static WebViewBuilder Create() => new();
 
     public override int Run(string gtkId = "")
     {
@@ -32,7 +31,7 @@ public class WebView : WebWindowNetCore.Base.WebView
         appDataPath = builder.AppDataPath;
         settings = builder.Data;
     }
-        
-    string appDataPath;
-    WebViewSettings? settings;
+
+    readonly string appDataPath;
+    readonly WebViewSettings? settings;
 }
