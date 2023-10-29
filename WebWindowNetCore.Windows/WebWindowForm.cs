@@ -78,6 +78,10 @@ public class WebWindowForm : Form
             }
         };
 
+        // TODO NoTitlebar: maximize
+        // TODO NoTitlebar: minimize
+        // TODO NoTitlebar: icon
+
         StartWebviewInit();
 
         async void StartWebviewInit()
