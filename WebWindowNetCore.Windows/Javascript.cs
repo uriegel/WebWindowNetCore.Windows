@@ -11,6 +11,10 @@ public class Callback
         => parent.Init(width, height, maximize);
 
     public void ShowDevtools() => parent.ShowDevtools();
+    public void MaximizeWindow() => parent.MaximizeWindow();
+    public void MinimizeWindow() => parent.MinimizeWindow();
+    public void RestoreWindow() => parent.RestoreWindow();
+    public int GetWindowState() => parent.GetWindowState();
 
     // public void DragDropFile()
     // {

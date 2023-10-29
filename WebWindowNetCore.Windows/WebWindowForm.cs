@@ -17,18 +17,22 @@ public class WebWindowForm : Form
     }
 
     public void ShowDevtools() => webView.CoreWebView2.OpenDevToolsWindow();
-    
+    public void MaximizeWindow() => WindowState = FormWindowState.Maximized;
+    public void MinimizeWindow() => WindowState = FormWindowState.Minimized;
+    public void RestoreWindow() => WindowState = FormWindowState.Normal;
+    public int GetWindowState() => (int)WindowState;
+        
     public WebWindowForm(WebViewSettings? settings, string appDataPath) 
     {
         noTitlebar = settings?.WithoutNativeTitlebar == true;
 
         if (!noTitlebar)
             Text = settings?.Title;
-        else
-        {
-            ControlBox = false;
-            FormBorderStyle = FormBorderStyle.Sizable;
-        }
+        // else
+        // {
+        //     ControlBox = false;
+        //     FormBorderStyle = FormBorderStyle.Sizable;
+        // }
 
         webView = new WebView2();
         ((System.ComponentModel.ISupportInitialize)(webView)).BeginInit();
@@ -78,9 +82,6 @@ public class WebWindowForm : Form
             }
         };
 
-        // TODO NoTitlebar: maximize
-        // TODO NoTitlebar: minimize
-        // TODO NoTitlebar: icon from resource
         // TODO WindowChrome on top 2px color1 when focused, otherwise color2
 
         StartWebviewInit();
@@ -140,6 +141,18 @@ public class WebWindowForm : Form
                     """ 
                         function webViewShowDevTools() {
                             callback.ShowDevtools()
+                        }
+                        function webViewMaximize() {
+                            callback.MaximizeWindow()
+                        }
+                        function webViewMinimize() {
+                            callback.MinimizeWindow()
+                        }
+                        function webViewRestore() {
+                            callback.RestoreWindow()
+                        }
+                        async function webViewGetWindowState() {
+                            return await callback.GetWindowState()
                         }
                     """);
             if ((settings?.HttpSettings?.RequestDelegates?.Length ?? 0) > 0)
