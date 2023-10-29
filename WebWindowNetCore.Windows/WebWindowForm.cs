@@ -82,8 +82,6 @@ public class WebWindowForm : Form
             }
         };
 
-        // TODO WindowChrome on top 2px color1 when focused, otherwise color2
-
         StartWebviewInit();
 
         async void StartWebviewInit()
