@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  	<SelfContained>false</SelfContained>
+	  <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile> 
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebWindowNetCore.Windows\WebWindowNetCore.Windows.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="../webroot/index.html">
+      <LogicalName>webroot/index.html</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="../webroot/css/styles.css">
+      <LogicalName>webroot/css/styles.css</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="../webroot/scripts/script.js">
+      <LogicalName>webroot/scripts/script.js</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

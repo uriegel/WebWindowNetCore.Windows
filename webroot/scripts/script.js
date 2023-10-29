@@ -15,4 +15,4 @@ btn1.onclick = async () => {
 
 btn2.onclick = () => window.close()
 
-// btnDevTools.onclick = webViewShowDevTools
+btnDevTools.onclick = () => webViewShowDevTools()

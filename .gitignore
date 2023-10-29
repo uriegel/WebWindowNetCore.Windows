@@ -3,3 +3,5 @@ TestApp/obj
 WebWindowNetCore.Windows/bin
 WebWindowNetCore.Windows/obj
 .ionide
+TestAppNoTitle/obj
+TestAppNoTitle/bin
