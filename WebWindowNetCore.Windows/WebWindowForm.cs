@@ -73,7 +73,11 @@ public class WebWindowForm : Form
 
         async void StartWebviewInit()
         {
-            var enf = await  CoreWebView2Environment.CreateAsync(null, appDataPath);
+            var opts = new CoreWebView2EnvironmentOptions
+            {
+                AdditionalBrowserArguments = "--enable-features=msWebView2EnableDraggableRegions"
+            };
+            var enf = await  CoreWebView2Environment.CreateAsync(null, appDataPath, opts);
             await webView.EnsureCoreWebView2Async(enf);
             webView.CoreWebView2.AddHostObjectToScript("Callback", new Callback(this));
             webView.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
