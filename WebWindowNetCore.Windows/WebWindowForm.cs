@@ -81,6 +81,7 @@ public class WebWindowForm : Form
         // TODO NoTitlebar: maximize
         // TODO NoTitlebar: minimize
         // TODO NoTitlebar: icon from resource
+        // TODO WindowChrome on top 2px color1 when focused, otherwise color2
 
         StartWebviewInit();
 
