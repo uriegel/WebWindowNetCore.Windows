@@ -10,6 +10,10 @@ WebView
     .InitialBounds(800, 600)
     .Title("WebView Test")
     .WithoutNativeTitlebar()
+    .OnWindowStateChanged(state => 
+    {
+        var s = state;
+    })
     .SaveBounds()
     //.DebugUrl("http://localhost:3000")
     //.DebugUrl("https://google.de")

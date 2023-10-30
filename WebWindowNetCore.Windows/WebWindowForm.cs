@@ -12,6 +12,7 @@ public class WebWindowForm : Form
     public void Init(int width, int height, bool maximize)  
     {
         ClientSize = new Size(width, height);
+        lastWindowState = FormWindowState.Normal;
         if (maximize)
             WindowState = FormWindowState.Maximized;
     }
@@ -25,6 +26,25 @@ public class WebWindowForm : Form
     public WebWindowForm(WebViewSettings? settings, string appDataPath) 
     {
         noTitlebar = settings?.WithoutNativeTitlebar == true;
+
+        Resize += (s, e) =>
+        {
+            if (WindowState == FormWindowState.Normal && lastWindowState != WindowState)
+            {
+                lastWindowState = FormWindowState.Normal;
+                settings?.OnWindowStateChanged?.Invoke((WebWindowState)lastWindowState);
+            }
+            else if (WindowState == FormWindowState.Maximized && lastWindowState != WindowState)
+            {
+                lastWindowState = FormWindowState.Maximized;
+                settings?.OnWindowStateChanged?.Invoke((WebWindowState)lastWindowState);
+            }
+            else if (WindowState == FormWindowState.Minimized && lastWindowState != WindowState)
+            {
+                lastWindowState = FormWindowState.Minimized;
+                settings?.OnWindowStateChanged?.Invoke((WebWindowState)lastWindowState);
+            }
+        };
 
         if (!noTitlebar)
             Text = settings?.Title;
@@ -215,6 +235,7 @@ public class WebWindowForm : Form
     const int WM_NCCALCSIZE = 0x83;
 
     readonly WebView2 webView;
+    FormWindowState lastWindowState;
     bool initialized;
     readonly bool noTitlebar;
 }
