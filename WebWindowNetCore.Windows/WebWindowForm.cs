@@ -13,8 +13,6 @@ public class WebWindowForm : Form
     {
         ClientSize = new Size(width, height);
         lastWindowState = FormWindowState.Normal;
-        if (maximize)
-            WindowState = FormWindowState.Maximized;
     }
 
     public void ShowDevtools() => webView.CoreWebView2.OpenDevToolsWindow();
@@ -48,7 +46,7 @@ public class WebWindowForm : Form
 
         if (!noTitlebar) 
             Text = settings?.Title;
-        else
+        else if (Environment.OSVersion.Version.Build < 22000)
         {
             ControlBox = false;
             FormBorderStyle = FormBorderStyle.Sizable;
@@ -153,24 +151,26 @@ public class WebWindowForm : Form
                     const bounds = JSON.parse(localStorage.getItem('window-bounds') || '{}')
                     const isMaximized = localStorage.getItem('isMaximized')
                     callback.Init(bounds.width || {{settings?.Width ?? 800}}, bounds.height || {{settings?.Height ?? 600}}, isMaximized == 'true')
+
+                    function webViewMaximize() {
+                        callback.MaximizeWindow()
+                    }
+                    function webViewMinimize() {
+                        callback.MinimizeWindow()
+                    }
+                    function webViewRestore() {
+                        callback.RestoreWindow()
+                    }
+                    async function webViewGetWindowState() {
+                        return await callback.GetWindowState()
+                    }
+
                 """);
             if (settings?.DevTools == true)
                 await webView.ExecuteScriptAsync(
                     """ 
                         function webViewShowDevTools() {
                             callback.ShowDevtools()
-                        }
-                        function webViewMaximize() {
-                            callback.MaximizeWindow()
-                        }
-                        function webViewMinimize() {
-                            callback.MinimizeWindow()
-                        }
-                        function webViewRestore() {
-                            callback.RestoreWindow()
-                        }
-                        async function webViewGetWindowState() {
-                            return await callback.GetWindowState()
                         }
                     """);
             if ((settings?.HttpSettings?.RequestDelegates?.Length ?? 0) > 0)
