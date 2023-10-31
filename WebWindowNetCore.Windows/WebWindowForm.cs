@@ -46,13 +46,13 @@ public class WebWindowForm : Form
             }
         };
 
-        if (!noTitlebar)
+        if (!noTitlebar) 
             Text = settings?.Title;
-        // else
-        // {
-        //     ControlBox = false;
-        //     FormBorderStyle = FormBorderStyle.Sizable;
-        // }
+        else
+        {
+            ControlBox = false;
+            FormBorderStyle = FormBorderStyle.Sizable;
+        }
 
         webView = new WebView2();
         ((System.ComponentModel.ISupportInitialize)(webView)).BeginInit();
