@@ -8,6 +8,27 @@ const btnMaximize = document.getElementById("buttonMaximize")
 const btnClose = document.getElementById("buttonClose")
 const btnWindowState = document.getElementById("buttonWindowState")
 const btnDevTools = document.getElementById("buttonDevTools")
+const dropZone = document.getElementById("dropZone")
+
+dropZone.addEventListener("dragover", e => {
+    e.preventDefault()
+    e.stopPropagation()
+})
+
+dropZone.addEventListener("dragenter", e => {
+    e.preventDefault()
+    e.stopPropagation()
+})
+
+dropZone.addEventListener("drop", e => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    chrome.webview.postMessageWithAdditionalObjects(1, e.dataTransfer.files);
+
+    let pathes = Array.from(e.dataTransfer.files).map(f => f.path)
+    console.log("pathes", pathes)
+})
 
 btn1.onclick = async () => {
     var res = await webViewRequest("cmd1", {

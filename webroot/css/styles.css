@@ -11,3 +11,9 @@ body {
 h1 {
     -webkit-app-region: drag;
 }
+
+.dropZone {
+    width: 100px;
+    height: 60px;
+    background-color: aqua;
+}

@@ -116,6 +116,14 @@ public class WebWindowForm : Form
             webView.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             webView.CoreWebView2.WindowCloseRequested += (obj, e) => Close();
+
+            webView.CoreWebView2.WebMessageReceived += (s, e) =>
+            {
+                if (e.WebMessageAsJson == "1")
+                {
+                    var addies = e.AdditionalObjects.Select(n => (n as CoreWebView2File)!.Path).ToArray();
+                }
+            };
             
             webView.CoreWebView2.ContainsFullScreenElementChanged += (objs, args) =>
             {
