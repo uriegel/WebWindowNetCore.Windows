@@ -23,11 +23,7 @@ dropZone.addEventListener("dragenter", e => {
 dropZone.addEventListener("drop", e => {
     e.preventDefault()
     e.stopPropagation()
-
-    chrome.webview.postMessageWithAdditionalObjects(1, e.dataTransfer.files);
-
-    let pathes = Array.from(e.dataTransfer.files).map(f => f.path)
-    console.log("pathes", pathes)
+    webViewDropFiles(e.dataTransfer.files);
 })
 
 btn1.onclick = async () => {

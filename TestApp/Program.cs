@@ -11,6 +11,10 @@ WebView
     .Title("WebView Test")
     .ResourceIcon("icon")
     .SaveBounds()
+    .OnFilesDrop(pathes => 
+    {
+        var pa = pathes;
+    })
     //.DebugUrl("http://localhost:3000")
     //.DebugUrl("https://google.de")
     .Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")

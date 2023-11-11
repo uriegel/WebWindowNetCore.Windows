@@ -117,13 +117,17 @@ public class WebWindowForm : Form
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             webView.CoreWebView2.WindowCloseRequested += (obj, e) => Close();
 
-            webView.CoreWebView2.WebMessageReceived += (s, e) =>
-            {
-                if (e.WebMessageAsJson == "1")
+            if (settings?.OnFilesDrop != null)
+                webView.CoreWebView2.WebMessageReceived += (s, e) =>
                 {
-                    var addies = e.AdditionalObjects.Select(n => (n as CoreWebView2File)!.Path).ToArray();
-                }
-            };
+                    if (e.WebMessageAsJson == "1")
+                    {
+                        var filesDropPathes = e.AdditionalObjects
+                                                .Select(n => (n as CoreWebView2File)!.Path)
+                                                .ToArray();
+                        settings.OnFilesDrop(filesDropPathes);
+                    }
+                };
             
             webView.CoreWebView2.ContainsFullScreenElementChanged += (objs, args) =>
             {
@@ -172,7 +176,6 @@ public class WebWindowForm : Form
                     async function webViewGetWindowState() {
                         return await callback.GetWindowState()
                     }
-
                 """);
             if (settings?.DevTools == true)
                 await webView.ExecuteScriptAsync(
@@ -195,7 +198,14 @@ public class WebWindowForm : Form
                             const response = await fetch(`/request/${method}`, msg) 
                             return await response.json() 
                         }
-                    """);                
+                    """);
+            if (settings?.OnFilesDrop != null)
+                await webView.ExecuteScriptAsync(
+                    """ 
+                        function webViewDropFiles(dropFiles) {
+                            chrome.webview.postMessageWithAdditionalObjects(1, dropFiles);
+                        }
+                    """);
         }
     }
 
