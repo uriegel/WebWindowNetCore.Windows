@@ -23,7 +23,7 @@ dropZone.addEventListener("dragenter", e => {
 dropZone.addEventListener("drop", e => {
     e.preventDefault()
     e.stopPropagation()
-    webViewDropFiles(e.dataTransfer.files);
+    webViewDropFiles("dropZone", e.dataTransfer.files);
 })
 
 btn1.onclick = async () => {

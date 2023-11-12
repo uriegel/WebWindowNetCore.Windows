@@ -1,9 +1,12 @@
 using System.Diagnostics;
+using System.Text.Json;
 using ClrWinApi;
 using CsTools.Extensions;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using WebWindowNetCore.Data;
+
+using static AspNetExtensions.Core;
 
 namespace WebWindowNetCore;
 
@@ -120,12 +123,13 @@ public class WebWindowForm : Form
             if (settings?.OnFilesDrop != null)
                 webView.CoreWebView2.WebMessageReceived += (s, e) =>
                 {
-                    if (e.WebMessageAsJson == "1")
+                    var msg = JsonSerializer.Deserialize<WebMsg>(e.WebMessageAsJson, JsonWebDefaults);
+                    if (msg?.Msg == 1)
                     {
                         var filesDropPathes = e.AdditionalObjects
                                                 .Select(n => (n as CoreWebView2File)!.Path)
                                                 .ToArray();
-                        settings.OnFilesDrop(filesDropPathes);
+                        settings.OnFilesDrop(msg.Text ?? "", filesDropPathes);
                     }
                 };
             
@@ -202,8 +206,11 @@ public class WebWindowForm : Form
             if (settings?.OnFilesDrop != null)
                 await webView.ExecuteScriptAsync(
                     """ 
-                        function webViewDropFiles(dropFiles) {
-                            chrome.webview.postMessageWithAdditionalObjects(1, dropFiles);
+                        function webViewDropFiles(id, dropFiles) {
+                            chrome.webview.postMessageWithAdditionalObjects({
+                                msg: 1,
+                                text: id
+                            }, dropFiles);
                         }
                     """);
         }
@@ -257,3 +264,5 @@ public class WebWindowForm : Form
     bool initialized;
     readonly bool noTitlebar;
 }
+
+record WebMsg(int Msg, string? Text);
