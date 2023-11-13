@@ -11,7 +11,7 @@ WebView
     .Title("WebView Test")
     .ResourceIcon("icon")
     .SaveBounds()
-    .OnFilesDrop((id, pathes) => 
+    .OnFilesDrop((id, move, pathes) => 
     {
         var pa = pathes;
     })

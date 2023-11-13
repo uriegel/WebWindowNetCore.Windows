@@ -129,7 +129,7 @@ public class WebWindowForm : Form
                         var filesDropPathes = e.AdditionalObjects
                                                 .Select(n => (n as CoreWebView2File)!.Path)
                                                 .ToArray();
-                        settings.OnFilesDrop(msg.Text ?? "", filesDropPathes);
+                        settings.OnFilesDrop(msg.Text ?? "", msg.Move, filesDropPathes);
                     }
                 };
             
@@ -206,10 +206,11 @@ public class WebWindowForm : Form
             if (settings?.OnFilesDrop != null)
                 await webView.ExecuteScriptAsync(
                     """ 
-                        function webViewDropFiles(id, dropFiles) {
+                        function webViewDropFiles(id, move, dropFiles) {
                             chrome.webview.postMessageWithAdditionalObjects({
                                 msg: 1,
-                                text: id
+                                text: id,
+                                move
                             }, dropFiles);
                         }
                     """);
@@ -265,4 +266,4 @@ public class WebWindowForm : Form
     readonly bool noTitlebar;
 }
 
-record WebMsg(int Msg, string? Text);
+record WebMsg(int Msg, bool Move, string? Text);
