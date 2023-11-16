@@ -15,24 +15,7 @@ public class Callback
     public void MinimizeWindow() => parent.MinimizeWindow();
     public void RestoreWindow() => parent.RestoreWindow();
     public int GetWindowState() => parent.GetWindowState();
-
-    // public void DragDropFile()
-    // {
-    //     var overlay = new Overlay(parent);
-    //     overlay.Top = parent.Top;
-    //     overlay.Left = parent.Left;
-    //     overlay.Width= parent.Width / 2;
-    //     overlay.Height = parent.Height / 2;
-    //     try
-    //     {
-    //         parent.Controls.Add(overlay);
-    //     }
-    //     catch (Exception e)
-    //     {
-
-    //     }
-    //     overlay.Show(parent);
-    // }
+    public void DragFiles() => parent.DragFiles();
 
     WebWindowForm parent;
 }

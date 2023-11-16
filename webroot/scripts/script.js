@@ -9,7 +9,12 @@ const btnClose = document.getElementById("buttonClose")
 const btnWindowState = document.getElementById("buttonWindowState")
 const btnDevTools = document.getElementById("buttonDevTools")
 const dropZone = document.getElementById("dropZone")
+const dragZone = document.getElementById("dragZone")
 
+dragZone.addEventListener("mousedown", (e) => {
+    webViewDragFiles()
+})
+    
 dropZone.addEventListener("dragover", e => {
     e.preventDefault()
     e.stopPropagation()
@@ -23,7 +28,7 @@ dropZone.addEventListener("dragenter", e => {
 dropZone.addEventListener("drop", e => {
     e.preventDefault()
     e.stopPropagation()
-    webViewDropFiles("dropZone", true, e.dataTransfer.files);
+    webViewDropFiles("dropZone", true, e.dataTransfer.files)
 })
 
 btn1.onclick = async () => {

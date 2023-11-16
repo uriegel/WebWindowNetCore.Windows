@@ -22,6 +22,9 @@ public class WebWindowForm : Form
     public void MaximizeWindow() => WindowState = FormWindowState.Maximized;
     public void MinimizeWindow() => WindowState = FormWindowState.Minimized;
     public void RestoreWindow() => WindowState = FormWindowState.Normal;
+    public void DragFiles() =>
+        DoDragDrop(new DataObject(DataFormats.FileDrop, new[] { @"d:\VoiceKids.ts" }), DragDropEffects.All);
+
     public int GetWindowState() => (int)WindowState;
         
     public WebWindowForm(WebViewSettings? settings, string appDataPath) 
@@ -180,6 +183,10 @@ public class WebWindowForm : Form
                     async function webViewGetWindowState() {
                         return await callback.GetWindowState()
                     }
+                    function webViewDragFiles() {
+                        callback.DragFiles()
+                    }
+
                 """);
             if (settings?.DevTools == true)
                 await webView.ExecuteScriptAsync(
