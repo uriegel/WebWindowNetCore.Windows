@@ -11,10 +11,13 @@ const btnDevTools = document.getElementById("buttonDevTools")
 const dropZone = document.getElementById("dropZone")
 const dragZone = document.getElementById("dragZone")
 
-dragZone.addEventListener("mousedown", (e) => {
-    webViewDragFiles()
-})
-    
+const onDragStart = evt => { 
+    webViewDragStart(["d:\VoiceKids.ts"])
+    evt.preventDefault()
+}
+
+dragZone.onmousedown = onDragStart    
+
 dropZone.addEventListener("dragover", e => {
     e.preventDefault()
     e.stopPropagation()

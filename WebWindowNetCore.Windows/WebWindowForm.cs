@@ -22,8 +22,8 @@ public class WebWindowForm : Form
     public void MaximizeWindow() => WindowState = FormWindowState.Maximized;
     public void MinimizeWindow() => WindowState = FormWindowState.Minimized;
     public void RestoreWindow() => WindowState = FormWindowState.Normal;
-    public void DragFiles() =>
-        DoDragDrop(new DataObject(DataFormats.FileDrop, new[] { @"d:\VoiceKids.ts" }), DragDropEffects.All);
+    public void DragStart(string[] fileList) =>
+        DoDragDrop(new DataObject(DataFormats.FileDrop, fileList), DragDropEffects.All);
 
     public int GetWindowState() => (int)WindowState;
         
@@ -183,8 +183,8 @@ public class WebWindowForm : Form
                     async function webViewGetWindowState() {
                         return await callback.GetWindowState()
                     }
-                    function webViewDragFiles() {
-                        callback.DragFiles()
+                    function webViewDragStart(fileList) {
+                        callback.DragStart(JSON.stringify({fileList}))
                     }
 
                 """);
@@ -221,6 +221,14 @@ public class WebWindowForm : Form
                             }, dropFiles);
                         }
                     """);
+
+            QueryContinueDrag += (s, e) =>
+            {
+                if (e.Action == DragAction.Drop || e.Action == DragAction.Cancel)
+                {
+                        
+                }
+            };
         }
     }
 
