@@ -15,7 +15,7 @@ public class WebView : Base.WebView
 {
     public static WebViewBuilder Create() => new();
 
-    public override int Run(string gtkId = "")
+    public override int Run()
     {
         var webForm = new WebWindowForm(settings, appDataPath);
         webForm.Show();
@@ -33,5 +33,5 @@ public class WebView : Base.WebView
     }
 
     readonly string appDataPath;
-    readonly WebViewSettings? settings;
+    readonly WebViewSettings settings;
 }

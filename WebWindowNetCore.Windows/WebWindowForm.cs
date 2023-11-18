@@ -1,23 +1,18 @@
-using System.Diagnostics;
 using System.Text.Json;
-using ClrWinApi;
-using CsTools.Extensions;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
+
+using ClrWinApi;
+using CsTools.Extensions;
 using WebWindowNetCore.Data;
 
 using static AspNetExtensions.Core;
+using LinqTools;
 
 namespace WebWindowNetCore;
 
 public class WebWindowForm : Form
 {
-    public void Init(int width, int height, bool maximize)  
-    {
-        ClientSize = new Size(width, height);
-        lastWindowState = FormWindowState.Normal;
-    }
-
     public void ShowDevtools() => webView.CoreWebView2.OpenDevToolsWindow();
     public void MaximizeWindow() => WindowState = FormWindowState.Maximized;
     public void MinimizeWindow() => WindowState = FormWindowState.Minimized;
@@ -27,31 +22,17 @@ public class WebWindowForm : Form
 
     public int GetWindowState() => (int)WindowState;
         
-    public WebWindowForm(WebViewSettings? settings, string appDataPath) 
+    public WebWindowForm(WebViewSettings settings, string appDataPath) 
     {
-        noTitlebar = settings?.WithoutNativeTitlebar == true;
+        noTitlebar = settings.WithoutNativeTitlebar == true;
 
-        Resize += (s, e) =>
-        {
-            if (WindowState == FormWindowState.Normal && lastWindowState != WindowState)
-            {
-                lastWindowState = FormWindowState.Normal;
-                settings?.OnWindowStateChanged?.Invoke((WebWindowState)lastWindowState);
-            }
-            else if (WindowState == FormWindowState.Maximized && lastWindowState != WindowState)
-            {
-                lastWindowState = FormWindowState.Maximized;
-                settings?.OnWindowStateChanged?.Invoke((WebWindowState)lastWindowState);
-            }
-            else if (WindowState == FormWindowState.Minimized && lastWindowState != WindowState)
-            {
-                lastWindowState = FormWindowState.Minimized;
-                settings?.OnWindowStateChanged?.Invoke((WebWindowState)lastWindowState);
-            }
-        };
-
+        FormClosing += (s, e) => 
+            s.SideEffectIf(WindowState == FormWindowState.Normal,
+                _ => (Data.Bounds.Retrieve(settings.AppId, new Bounds(null, null, settings.Width, settings.Height, null))
+                        with { Width = Width, Height = Height })
+                        .Save(settings.AppId));
         if (!noTitlebar) 
-            Text = settings?.Title;
+            Text = settings.Title;
         else if (Environment.OSVersion.Version.Build < 22000)
         {
             ControlBox = false;
@@ -79,12 +60,15 @@ public class WebWindowForm : Form
         // 
         //this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         
-        if (settings?.ResourceIcon != null)
+        if (settings.ResourceIcon != null)
             Icon = new Icon(Resources.Get(settings.ResourceIcon)!);
 
         AutoScaleDimensions = new SizeF(8F, 20F);
-        WindowState = FormWindowState.Minimized;
         AutoScaleMode = AutoScaleMode.Font;
+
+        var bounds = Data.Bounds.Retrieve(settings.AppId!, new Bounds(null, null, settings.Width, settings.Height, null));
+        Width = bounds.Width ?? 800;
+        Height = bounds.Height ?? 600;
         
         Controls.Add(webView);
         Name = "WebWindow";
@@ -94,7 +78,7 @@ public class WebWindowForm : Form
 
         Resize += async (s, e) =>
         {
-            if (initialized && settings?.SaveBounds == true) {
+            if (initialized && settings.SaveBounds == true) {
                 if (WindowState != FormWindowState.Maximized)
                     await webView.ExecuteScriptAsync(
                         $$"""
@@ -123,7 +107,7 @@ public class WebWindowForm : Form
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             webView.CoreWebView2.WindowCloseRequested += (obj, e) => Close();
 
-            if (settings?.OnFilesDrop != null)
+            if (settings.OnFilesDrop != null)
                 webView.CoreWebView2.WebMessageReceived += (s, e) =>
                 {
                     var msg = JsonSerializer.Deserialize<WebMsg>(e.WebMessageAsJson, JsonWebDefaults);
@@ -154,12 +138,7 @@ public class WebWindowForm : Form
                 }
             };
                 
-            var url = Debugger.IsAttached && !string.IsNullOrEmpty(settings?.DebugUrl)
-                ? settings?.DebugUrl
-                : settings?.Url != null
-                ? settings.Url
-                : $"http://localhost:{settings?.HttpSettings?.Port ?? 80}{settings?.HttpSettings?.WebrootUrl}/{settings?.HttpSettings?.DefaultHtml}";
-            webView.Source = new Uri(url + settings?.Query ?? "");
+            webView.Source = new Uri(WebViewSettings.GetUri(settings));
 
             WindowState = FormWindowState.Normal;
             initialized = true;
@@ -167,9 +146,6 @@ public class WebWindowForm : Form
                 $$"""
                     const callback = chrome.webview.hostObjects.Callback
                     callback.Ready()
-                    const bounds = JSON.parse(localStorage.getItem('window-bounds') || '{}')
-                    const isMaximized = localStorage.getItem('isMaximized')
-                    callback.Init(bounds.width || {{settings?.Width ?? 800}}, bounds.height || {{settings?.Height ?? 600}}, isMaximized == 'true')
 
                     function webViewMaximize() {
                         callback.MaximizeWindow()
@@ -188,14 +164,14 @@ public class WebWindowForm : Form
                     }
 
                 """);
-            if (settings?.DevTools == true)
+            if (settings.DevTools == true)
                 await webView.ExecuteScriptAsync(
                     """ 
                         function webViewShowDevTools() {
                             callback.ShowDevtools()
                         }
                     """);
-            if ((settings?.HttpSettings?.RequestDelegates?.Length ?? 0) > 0)
+            if ((settings.HttpSettings?.RequestDelegates?.Length ?? 0) > 0)
                 await webView.ExecuteScriptAsync(
                     """ 
                         async function webViewRequest(method, input) {
@@ -210,7 +186,7 @@ public class WebWindowForm : Form
                             return await response.json() 
                         }
                     """);
-            if (settings?.OnFilesDrop != null)
+            if (settings.OnFilesDrop != null)
                 await webView.ExecuteScriptAsync(
                     """ 
                         function webViewDropFiles(id, move, dropFiles) {
@@ -276,7 +252,6 @@ public class WebWindowForm : Form
     const int WM_NCCALCSIZE = 0x83;
 
     readonly WebView2 webView;
-    FormWindowState lastWindowState;
     bool initialized;
     readonly bool noTitlebar;
 }

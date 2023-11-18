@@ -31,7 +31,7 @@ WebView
     .DebuggingEnabled()
 #endif            
     .Build()
-    .Run("de.uriegel.Commander");    
+    .Run();    
 
 void StartEvents(Action<Event> onChanged)   
 {

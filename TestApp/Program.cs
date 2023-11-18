@@ -7,6 +7,7 @@ StartEvents(sseEventSource.Send);
 
 WebView
     .Create()
+    .SetAppId("de.uriegel.webwindownetcode.windows")
     .InitialBounds(800, 600)
     .Title("WebView Test")
     .ResourceIcon("icon")
@@ -31,7 +32,7 @@ WebView
     .DebuggingEnabled()
 #endif            
     .Build()
-    .Run("de.uriegel.Commander");    
+    .Run();    
 
 void StartEvents(Action<Event> onChanged)   
 {
