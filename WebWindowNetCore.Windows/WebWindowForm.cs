@@ -17,9 +17,11 @@ public class WebWindowForm : Form
     public void MaximizeWindow() => WindowState = FormWindowState.Maximized;
     public void MinimizeWindow() => WindowState = FormWindowState.Minimized;
     public void RestoreWindow() => WindowState = FormWindowState.Normal;
-    public void DragStart(string[] fileList) =>
-        DoDragDrop(new DataObject(DataFormats.FileDrop, fileList), DragDropEffects.All);
-
+    public void DragStart(string path, string[] fileList) 
+        => DoDragDrop(new DataObject(DataFormats.FileDrop, fileList
+                                                            .Select(f => path.AppendPath(f))
+                                                            .ToArray()), DragDropEffects.All);
+    
     public int GetWindowState() => (int)WindowState;
         
     public WebWindowForm(WebViewSettings settings, string appDataPath) 
@@ -159,8 +161,8 @@ public class WebWindowForm : Form
                     async function webViewGetWindowState() {
                         return await callback.GetWindowState()
                     }
-                    function webViewDragStart(fileList) {
-                        callback.DragStart(JSON.stringify({fileList}))
+                    function webViewDragStart(path, fileList) {
+                        callback.DragStart(JSON.stringify({path, fileList}))
                     }
                     function webViewRegisterDragEnd(cb) {
                         webViewDragEndCallback = cb
@@ -204,7 +206,7 @@ public class WebWindowForm : Form
 
             QueryContinueDrag += (s, e) =>
                 e.SideEffectIf(e.Action == DragAction.Drop || e.Action == DragAction.Cancel,
-                    _ => webView.ExecuteScriptAsync("if (webViewDragEndCallback) webViewDragEndCallback()"));
+                        _ => webView.ExecuteScriptAsync("if (webViewDragEndCallback) webViewDragEndCallback()"));
         }
     }
 

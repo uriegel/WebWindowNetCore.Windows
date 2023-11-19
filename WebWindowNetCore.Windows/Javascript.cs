@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Text.Json;
-
+using LinqTools;
 using static AspNetExtensions.Core;
 
 namespace WebWindowNetCore;
@@ -15,10 +15,13 @@ public class Callback
     public void MinimizeWindow() => parent.MinimizeWindow();
     public void RestoreWindow() => parent.RestoreWindow();
     public int GetWindowState() => parent.GetWindowState();
-    public void DragStart(string fileList) 
-        => parent.DragStart(JsonSerializer.Deserialize<FileListType>(fileList, JsonWebDefaults)?.FileList ?? Array.Empty<string>());
+    public void DragStart(string fileList)
+        => JsonSerializer.Deserialize<FileListType>(fileList, JsonWebDefaults)
+            ?.SideEffect(flt =>
+                parent.DragStart(flt.Path, flt.FileList));
+        
 
     readonly WebWindowForm parent;
 }
 
-record FileListType(string[] FileList);
+record FileListType(string[] FileList, string Path);

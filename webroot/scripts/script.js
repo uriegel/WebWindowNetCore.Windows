@@ -16,7 +16,7 @@ webViewRegisterDragEnd(() => dragZone.classList.remove("blurry"))
 
 const onDragStart = evt => { 
     dragZone.classList.add("blurry")
-    webViewDragStart(["d:\VoiceKids.ts"])
+    webViewDragStart("C:\\Users\\urieg\\test2", ["affe.config", "affen.config"])
     evt.preventDefault()
 }
 

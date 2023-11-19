@@ -6,9 +6,9 @@
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>4.0.1-alpha</Version>
-		<FileVersion>4.0.1.0</FileVersion>
-		<AssemblyVersion>4.0.1.0</AssemblyVersion>
+		<Version>4.0.2-alpha</Version>
+		<FileVersion>4.0.2.0</FileVersion>
+		<AssemblyVersion>4.0.2.0</AssemblyVersion>
 		<Authors>Uwe Riegel</Authors>
 		<Company>Uwe Riegel</Company>
 		<Copyright>Uwe Riegel</Copyright>
