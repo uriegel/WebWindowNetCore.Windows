@@ -9,6 +9,7 @@ WebView
     .Create()
     .SetAppId("de.uriegel.webwindownetcode.windows")
     .InitialBounds(800, 600)
+    .SaveBounds()
     .Title("WebView Test")
     .ResourceIcon("icon")
     .SaveBounds()

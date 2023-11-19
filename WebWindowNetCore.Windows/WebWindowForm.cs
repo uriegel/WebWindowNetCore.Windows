@@ -162,6 +162,10 @@ public class WebWindowForm : Form
                     function webViewDragStart(fileList) {
                         callback.DragStart(JSON.stringify({fileList}))
                     }
+                    function webViewRegisterDragEnd(cb) {
+                        webViewDragEndCallback = cb
+                    }
+                    var webViewDragEndCallback
 
                 """);
             if (settings.DevTools == true)
@@ -199,12 +203,8 @@ public class WebWindowForm : Form
                     """);
 
             QueryContinueDrag += (s, e) =>
-            {
-                if (e.Action == DragAction.Drop || e.Action == DragAction.Cancel)
-                {
-                        
-                }
-            };
+                e.SideEffectIf(e.Action == DragAction.Drop || e.Action == DragAction.Cancel,
+                    _ => webView.ExecuteScriptAsync("if (webViewDragEndCallback) webViewDragEndCallback()"));
         }
     }
 

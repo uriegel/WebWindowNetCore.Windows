@@ -18,3 +18,7 @@ h1 {
     margin-bottom: 5px;
     background-color: aqua;
 }
+
+.blurry {
+    opacity:0.4;
+}

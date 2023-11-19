@@ -10,22 +10,30 @@ const btnWindowState = document.getElementById("buttonWindowState")
 const btnDevTools = document.getElementById("buttonDevTools")
 const dropZone = document.getElementById("dropZone")
 const dragZone = document.getElementById("dragZone")
+const devTools = document.getElementById("buttonDevTools")
+
+webViewRegisterDragEnd(() => dragZone.classList.remove("blurry"))
 
 const onDragStart = evt => { 
+    dragZone.classList.add("blurry")
     webViewDragStart(["d:\VoiceKids.ts"])
     evt.preventDefault()
 }
 
-dragZone.onmousedown = onDragStart    
+devTools.onclick = () => webViewShowDevTools()
+
+dragZone.ondragstart = onDragStart    
+
+document.body.addEventListener("dragover", e => {
+    e.preventDefault()
+    e.stopPropagation()
+    e.dataTransfer.dropEffect = "none"
+})
 
 dropZone.addEventListener("dragover", e => {
     e.preventDefault()
     e.stopPropagation()
-})
-
-dropZone.addEventListener("dragenter", e => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.dataTransfer.dropEffect = evt.shiftKey ? "move" : "copy"
 })
 
 dropZone.addEventListener("drop", e => {
