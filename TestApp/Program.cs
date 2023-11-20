@@ -13,6 +13,7 @@ WebView
     .Title("WebView Test")
     .ResourceIcon("icon")
     .SaveBounds()
+    .DefaultContextMenuEnabled()
     .OnFilesDrop((id, move, pathes) => 
     {
         var pa = pathes;
@@ -44,7 +45,7 @@ void StartEvents(Action<Event> onChanged)
             {
                 Thread.Sleep(5000);
                 onChanged(new($"Ein Event {counter++}"));
-           }
+            }
         })
         {
             IsBackground = true
