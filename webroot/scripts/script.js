@@ -10,17 +10,16 @@ const btnWindowState = document.getElementById("buttonWindowState")
 const btnDevTools = document.getElementById("buttonDevTools")
 const dropZone = document.getElementById("dropZone")
 const dragZone = document.getElementById("dragZone")
-const devTools = document.getElementById("buttonDevTools")
 
-webViewRegisterDragEnd(() => dragZone.classList.remove("blurry"))
-
-const onDragStart = evt => { 
+const onDragStart = async evt => { 
     dragZone.classList.add("blurry")
-    webViewDragStart("C:\\Users\\urieg\\test2", ["affe.config", "affen.config"])
     evt.preventDefault()
+//    await webViewDragStart("C:\\Users\\urieg\\test2", ["affe.config", "affen.config"])
+    await webViewDragStart("D:\\CaesarTeams", ["CaesarTeams.exe", "clrcompression.dll"])
+    dragZone.classList.remove("blurry")
 }
 
-devTools.onclick = () => webViewShowDevTools()
+btnDevTools.onclick = () => webViewShowDevTools()
 
 dragZone.ondragstart = onDragStart    
 
@@ -54,7 +53,6 @@ btnClose.onclick = () => window.close()
 btnMinimize.onclick = () => webViewMinimize()
 btnRestore.onclick = () => webViewRestore()
 btnMaximize.onclick = () => webViewMaximize()
-btnDevTools.onclick = () => webViewShowDevTools()
 
 btnWindowState.onclick = async () => {
     alert(`Window State: ${await webViewGetWindowState()}`)

@@ -8,6 +8,8 @@ using WebWindowNetCore.Data;
 
 using static AspNetExtensions.Core;
 using LinqTools;
+using System.Reactive.Subjects;
+using System.Reactive.Linq;
 
 namespace WebWindowNetCore;
 
@@ -17,10 +19,15 @@ public class WebWindowForm : Form
     public void MaximizeWindow() => WindowState = FormWindowState.Maximized;
     public void MinimizeWindow() => WindowState = FormWindowState.Minimized;
     public void RestoreWindow() => WindowState = FormWindowState.Normal;
-    public void DragStart(string path, string[] fileList) 
-        => DoDragDrop(new DataObject(DataFormats.FileDrop, fileList
+    public Task DragStart(string path, string[] fileList) 
+        => new TaskCompletionSource<int>()
+            .SideEffect(t => dropFinishedSubject
+                                .Take(1)
+                                .Subscribe(_ => t.SetResult(0)))
+            .SideEffect(_ => DoDragDrop(new DataObject(DataFormats.FileDrop, fileList
                                                             .Select(f => path.AppendPath(f))
-                                                            .ToArray()), DragDropEffects.All);
+                                                            .ToArray()), DragDropEffects.All))
+            .Task;
     
     public int GetWindowState() => (int)WindowState;
         
@@ -43,6 +50,10 @@ public class WebWindowForm : Form
 
         webView = new WebView2();
         ((System.ComponentModel.ISupportInitialize)(webView)).BeginInit();
+
+        QueryContinueDrag += (s, e) =>
+            e.SideEffectIf(e.Action == DragAction.Drop || e.Action == DragAction.Cancel,
+                _ => dropFinishedSubject.OnNext(0));
 
         SuspendLayout();
         // 
@@ -161,14 +172,9 @@ public class WebWindowForm : Form
                     async function webViewGetWindowState() {
                         return await callback.GetWindowState()
                     }
-                    function webViewDragStart(path, fileList) {
-                        callback.DragStart(JSON.stringify({path, fileList}))
+                    async function webViewDragStart(path, fileList) {
+                        await callback.DragStart(JSON.stringify({path, fileList}))
                     }
-                    function webViewRegisterDragEnd(cb) {
-                        webViewDragEndCallback = cb
-                    }
-                    var webViewDragEndCallback
-
                 """);
             if (settings.DevTools == true)
                 await webView.ExecuteScriptAsync(
@@ -203,10 +209,6 @@ public class WebWindowForm : Form
                             }, dropFiles);
                         }
                     """);
-
-            QueryContinueDrag += (s, e) =>
-                e.SideEffectIf(e.Action == DragAction.Drop || e.Action == DragAction.Cancel,
-                        _ => webView.ExecuteScriptAsync("if (webViewDragEndCallback) webViewDragEndCallback()"));
         }
     }
 
@@ -250,6 +252,8 @@ public class WebWindowForm : Form
         }
         m.Result = IntPtr.Zero;
     }
+
+    readonly Subject<int> dropFinishedSubject = new();
 
     const int WM_NCCALCSIZE = 0x83;
 

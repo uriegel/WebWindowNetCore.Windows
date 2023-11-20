@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection;
 using CsTools.Extensions;
 using WebWindowNetCore.Data;
@@ -27,20 +28,25 @@ public class WebViewBuilder : WebWindowNetCore.Base.WebViewBuilder
         AppDataPath = new FileInfo(loader).DirectoryName!;
         LoadLibrary(loader);
 
-        string GetWebViewLoader()
+        static string GetWebViewLoader()
         {
-            using var targetFile = 
+            var targetFileName = 
                 Environment
                 .GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                .AppendPath("uriegel.WebWindowNetCore")
+                .AppendPath(@$"de.uriegel.WebWindowNetCore\{Process.GetCurrentProcess().ProcessName}")
                 .EnsureDirectoryExists()
-                .AppendPath("WebView2Loader.dll")
-                .CreateFile();
-            Assembly
-                .GetExecutingAssembly()
-                ?.GetManifestResourceStream("binaries/webviewloader")
-                ?.CopyTo(targetFile);
-            return (targetFile as FileStream)!.Name;
+                .AppendPath("WebView2Loader.dll");
+
+            try 
+            {
+                using var targetFile = targetFileName.CreateFile();
+                Assembly
+                    .GetExecutingAssembly()
+                    ?.GetManifestResourceStream("binaries/webviewloader")
+                    ?.CopyTo(targetFile);
+            }
+            catch {}
+            return targetFileName;
         }
     }
 }
