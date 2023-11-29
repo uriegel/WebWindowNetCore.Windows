@@ -17,7 +17,7 @@ public class WebView : Base.WebView
 
     public override int Run()
     {
-        var webForm = new WebWindowForm(settings, appDataPath);
+        var webForm = new WebWindowForm(settings, OnFormCreation, appDataPath);
         webForm.Show();
         webForm.FormClosed += (s, e) => PostQuitMessage(0);
 
@@ -29,9 +29,11 @@ public class WebView : Base.WebView
     internal WebView(WebViewBuilder builder)
     {
         appDataPath = builder.AppDataPath;
+        OnFormCreation = (builder as WebWindowNetCore.WebViewBuilder).OnFormCreation;
         settings = builder.Data;
     }
 
+    readonly Action<WebWindowForm>? OnFormCreation;
     readonly string appDataPath;
     readonly WebViewSettings settings;
 }

@@ -30,10 +30,13 @@ public class WebWindowForm : Form
             .Task;
     
     public int GetWindowState() => (int)WindowState;
+
+    public void ScriptAction(int id) => OnScriptAction?.Invoke(id); 
         
-    public WebWindowForm(WebViewSettings settings, string appDataPath) 
+    public WebWindowForm(WebViewSettings settings, Action<WebWindowForm>? OnFormCreation, string appDataPath) 
     {
         noTitlebar = settings.WithoutNativeTitlebar == true;
+        OnScriptAction = settings.OnScriptAction;
 
         FormClosing += (s, e) => 
             s.SideEffectIf(WindowState == FormWindowState.Normal,
@@ -68,6 +71,9 @@ public class WebWindowForm : Form
         webView.Dock = DockStyle.Fill;
         webView.TabIndex = 0;
         webView.ZoomFactor = 1D;
+
+        OnFormCreation?.Invoke(this);
+
         // 
         // Form1
         // 
@@ -109,9 +115,9 @@ public class WebWindowForm : Form
         {
             var opts = noTitlebar
                 ? new CoreWebView2EnvironmentOptions
-                        {
-                            AdditionalBrowserArguments = "--enable-features=msWebView2EnableDraggableRegions"
-                        }
+                    {
+                        AdditionalBrowserArguments = "--enable-features=msWebView2EnableDraggableRegions"
+                    }
                 : null;
             var enf = await  CoreWebView2Environment.CreateAsync(null, appDataPath, opts);
             await webView.EnsureCoreWebView2Async(enf);
@@ -183,6 +189,13 @@ public class WebWindowForm : Form
                             callback.ShowDevtools()
                         }
                     """);
+            if (settings.OnScriptAction != null)
+                await webView.ExecuteScriptAsync(
+                    """ 
+                        function webViewScriptAction(id) {
+                            callback.ScriptAction(id)
+                        }
+                    """);
             if ((settings.HttpSettings?.RequestDelegates?.Length ?? 0) > 0)
                 await webView.ExecuteScriptAsync(
                     """ 
@@ -252,6 +265,8 @@ public class WebWindowForm : Form
         }
         m.Result = IntPtr.Zero;
     }
+
+    readonly Action<int>? OnScriptAction;
 
     readonly Subject<int> dropFinishedSubject = new();
 

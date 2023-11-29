@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Reflection;
+
 using CsTools.Extensions;
+using LinqTools;
 using WebWindowNetCore.Data;
 
 using static ClrWinApi.Api;
@@ -10,6 +12,9 @@ namespace WebWindowNetCore;
 public class WebViewBuilder : WebWindowNetCore.Base.WebViewBuilder
 {
     public override WebView Build() => new WebView(this);
+
+    public WebViewBuilder FormCreating(Action<WebWindowForm> onFormCreation)
+        => this.SideEffect(n => OnFormCreation = onFormCreation);
 
     public string AppDataPath { get; }
 
@@ -49,4 +54,6 @@ public class WebViewBuilder : WebWindowNetCore.Base.WebViewBuilder
             return targetFileName;
         }
     }
+
+    internal Action<WebWindowForm>? OnFormCreation;
 }
