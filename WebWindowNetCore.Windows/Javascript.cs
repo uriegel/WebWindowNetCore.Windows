@@ -19,7 +19,7 @@ public class Callback
             .Map(flt =>
                 parent.DragStart(flt!.Path, flt!.FileList));
 
-    public void ScriptAction(int id) => parent.ScriptAction(id);
+    public void ScriptAction(int id, string? msg) => parent.ScriptAction(id, msg);
     
     readonly WebWindowForm parent;
 }

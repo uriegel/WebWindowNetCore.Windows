@@ -1,13 +1,18 @@
 ﻿using System.Drawing;
+using System.Text.Json;
 using System.Windows.Forms;
+
 using AspNetExtensions;
 using LinqTools;
 using WebWindowNetCore;
+
+using static AspNetExtensions.Core;
 
 var sseEventSource = WebView.CreateEventSource<Event>();
 StartEvents(sseEventSource.Send);
 
 ContextMenuStrip? contextMenuStrip1 = null;
+WebWindowForm? form = null;
 
 WebView
     .Create()
@@ -15,7 +20,14 @@ WebView
     .DownCast<WebViewBuilder>()
     .FormCreating(FormCreation)
     .Title("WebView Test")
-    .OnScriptAction(id => contextMenuStrip1?.Show(new(200, 200)))
+    .OnScriptAction((id, msg) => 
+    {
+        if (msg != null && contextMenuStrip1 != null && form != null)
+        {
+            var action = JsonSerializer.Deserialize<MenuAction>(msg, JsonWebDefaults);
+            contextMenuStrip1.Show(form.PointToScreen(new((int)(action!.RatioLeft * form!.Width), (int)(action!.RationTop * form!.Height))));
+        }
+    })
     .WithoutNativeTitlebar()
     .OnWindowStateChanged(state => 
     {
@@ -59,6 +71,7 @@ void StartEvents(Action<Event> onChanged)
 void FormCreation(WebWindowForm webViewForm)
 {
     var menuStrip1 = new MenuStrip();
+    form = webViewForm;
     var toolStripMenuItem1 = new ToolStripMenuItem();
     var toolStripMenuItem2 = new ToolStripMenuItem();
     var toolStripMenuItem3 = new ToolStripMenuItem();
@@ -178,3 +191,5 @@ void FormCreation(WebWindowForm webViewForm)
 }
 
 record Event(string Content);
+
+record MenuAction(double RatioLeft, double RationTop);
