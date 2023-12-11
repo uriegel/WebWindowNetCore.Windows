@@ -1,5 +1,4 @@
 using WebWindowNetCore.Data;
-using static ClrWinApi.Api;
 
 namespace WebWindowNetCore;
 
@@ -18,11 +17,7 @@ public class WebView : Base.WebView
     public override int Run()
     {
         var webForm = new WebWindowForm(settings, OnFormCreation, appDataPath);
-        webForm.Show();
-        webForm.FormClosed += (s, e) => PostQuitMessage(0);
-
-        while (GetMessage(out var msg, IntPtr.Zero, 0, 0) != 0)
-            DispatchMessage(ref msg);
+        Application.Run(webForm);
         return 0;
     }
 
