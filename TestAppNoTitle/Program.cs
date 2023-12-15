@@ -20,9 +20,6 @@ WebView
     .DownCast<WebViewBuilder>()
     .FormCreating(FormCreation)
     .Title("WebView Test")
-<<<<<<< HEAD
-    .OnScriptAction((id, s) => contextMenuStrip1?.Show(new(200, 200)))
-=======
     .OnScriptAction((id, msg) => 
     {
         if (msg != null && contextMenuStrip1 != null && form != null)
@@ -31,7 +28,6 @@ WebView
             contextMenuStrip1.Show(form.PointToScreen(new((int)(action!.RatioLeft * form!.Width), (int)(action!.RationTop * form!.Height))));
         }
     })
->>>>>>> 1a09aa8d75a280d83fe93805d76bf4ad180f5579
     .WithoutNativeTitlebar()
     .OnWindowStateChanged(state => 
     {

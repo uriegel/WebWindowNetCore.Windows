@@ -31,11 +31,7 @@ public class WebWindowForm : Form
     
     public int GetWindowState() => (int)WindowState;
 
-<<<<<<< HEAD
-    public void ScriptAction(int id) => OnScriptAction?.Invoke(id, null); 
-=======
     public void ScriptAction(int id, string? msg) => OnScriptAction?.Invoke(id, msg); 
->>>>>>> 1a09aa8d75a280d83fe93805d76bf4ad180f5579
         
     public WebWindowForm(WebViewSettings settings, Action<WebWindowForm>? OnFormCreation, string appDataPath) 
     {
