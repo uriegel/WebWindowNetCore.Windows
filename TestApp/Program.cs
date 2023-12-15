@@ -18,17 +18,18 @@ WebView
     .Title("WebView Test")
     .ResourceIcon("icon")
     .SaveBounds()
-    .DefaultContextMenuEnabled()
+    .DefaultContextMenuEnabled()    
     .OnFilesDrop((id, move, pathes) => 
     {
         var pa = pathes;
     })
-    //.DebugUrl("http://localhost:3000")
+    .DebugUrl("http://127.0.0.1:20000")
     //.DebugUrl("https://google.de")
-    .Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
+    //.Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
     .ConfigureHttp(http => http
         .ResourceWebroot("webroot", "/web")
         .UseSse("sse/test", sseEventSource)
+        .UseReverseProxy("127.0.0.1", "", "http://localhost:5173")
         .MapGet("video", context => 
             context
                 .SideEffect(c => Console.WriteLine("Range request"))
