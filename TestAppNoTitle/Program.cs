@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 using AspNetExtensions;
-using LinqTools;
+using CsTools.Extensions;
 using WebWindowNetCore;
 
 var sseEventSource = WebView.CreateEventSource<Event>();
@@ -15,7 +15,7 @@ WebView
     .DownCast<WebViewBuilder>()
     .FormCreating(FormCreation)
     .Title("WebView Test")
-    .OnScriptAction(id => contextMenuStrip1?.Show(new(200, 200)))
+    .OnScriptAction((id, s) => contextMenuStrip1?.Show(new(200, 200)))
     .WithoutNativeTitlebar()
     .OnWindowStateChanged(state => 
     {

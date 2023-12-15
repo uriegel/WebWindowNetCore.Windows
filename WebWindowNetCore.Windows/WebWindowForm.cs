@@ -31,7 +31,7 @@ public class WebWindowForm : Form
     
     public int GetWindowState() => (int)WindowState;
 
-    public void ScriptAction(int id) => OnScriptAction?.Invoke(id); 
+    public void ScriptAction(int id) => OnScriptAction?.Invoke(id, null); 
         
     public WebWindowForm(WebViewSettings settings, Action<WebWindowForm>? OnFormCreation, string appDataPath) 
     {
@@ -266,7 +266,7 @@ public class WebWindowForm : Form
         m.Result = IntPtr.Zero;
     }
 
-    readonly Action<int>? OnScriptAction;
+    readonly Action<int, string?>? OnScriptAction;
 
     readonly Subject<int> dropFinishedSubject = new();
 

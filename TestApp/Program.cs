@@ -1,5 +1,5 @@
 ﻿using AspNetExtensions;
-using LinqTools;
+using CsTools.Extensions;
 using WebWindowNetCore;
 
 var sseEventSource = WebView.CreateEventSource<Event>();
