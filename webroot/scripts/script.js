@@ -22,7 +22,10 @@ const onDragStart = async evt => {
 
 btnDevTools.onclick = () => webViewShowDevTools()
 
-btnHamburger.onclick = () => webViewScriptAction(99)
+btnHamburger.onclick = () => webViewScriptAction(99, JSON.stringify({
+    ratioLeft: btnHamburger.offsetLeft / document.body.offsetWidth,
+    rationTop: (btnHamburger.offsetTop + btnHamburger.offsetHeight) / document.body.offsetHeight
+}))
 
 dragZone.ondragstart = onDragStart    
 

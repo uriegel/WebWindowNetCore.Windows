@@ -1,15 +1,15 @@
 using System.Text.Json;
+using System.Reactive.Subjects;
+using System.Reactive.Linq;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 
 using ClrWinApi;
 using CsTools.Extensions;
 using WebWindowNetCore.Data;
+using LinqTools;
 
 using static AspNetExtensions.Core;
-using LinqTools;
-using System.Reactive.Subjects;
-using System.Reactive.Linq;
 
 namespace WebWindowNetCore;
 
@@ -31,7 +31,11 @@ public class WebWindowForm : Form
     
     public int GetWindowState() => (int)WindowState;
 
+<<<<<<< HEAD
     public void ScriptAction(int id) => OnScriptAction?.Invoke(id, null); 
+=======
+    public void ScriptAction(int id, string? msg) => OnScriptAction?.Invoke(id, msg); 
+>>>>>>> 1a09aa8d75a280d83fe93805d76bf4ad180f5579
         
     public WebWindowForm(WebViewSettings settings, Action<WebWindowForm>? OnFormCreation, string appDataPath) 
     {
@@ -192,8 +196,8 @@ public class WebWindowForm : Form
             if (settings.OnScriptAction != null)
                 await webView.ExecuteScriptAsync(
                     """ 
-                        function webViewScriptAction(id) {
-                            callback.ScriptAction(id)
+                        function webViewScriptAction(id, msg) {
+                            callback.ScriptAction(id, msg)
                         }
                     """);
             if ((settings.HttpSettings?.RequestDelegates?.Length ?? 0) > 0)
@@ -278,3 +282,4 @@ public class WebWindowForm : Form
 }
 
 record WebMsg(int Msg, bool Move, string? Text);
+

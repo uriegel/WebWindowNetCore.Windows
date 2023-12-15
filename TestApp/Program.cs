@@ -2,7 +2,10 @@
 using CsTools.Extensions;
 using WebWindowNetCore;
 
+//ApplicationConfiguration.Initialize();
+
 var sseEventSource = WebView.CreateEventSource<Event>();
+WebWindowForm? webViewForm = null;
 StartEvents(sseEventSource.Send);
 
 WebView
@@ -10,6 +13,8 @@ WebView
     .SetAppId("de.uriegel.webwindownetcode.windows")
     .InitialBounds(800, 600)
     .SaveBounds()
+    .DownCast<WebViewBuilder>()
+    .FormCreating(FormCreation)
     .Title("WebView Test")
     .ResourceIcon("icon")
     .SaveBounds()
@@ -51,5 +56,8 @@ void StartEvents(Action<Event> onChanged)
             IsBackground = true
         }.Start();   
 }
+
+void FormCreation(WebWindowForm form)
+    => webViewForm = form;
 
 record Event(string Content);

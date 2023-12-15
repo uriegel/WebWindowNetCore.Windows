@@ -8,6 +8,10 @@
     <Nullable>enable</Nullable>
   	<SelfContained>false</SelfContained>
 	  <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile> 
+
+	  <ApplicationUseCompatibleTextRendering>false</ApplicationUseCompatibleTextRendering>
+	  <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+
   </PropertyGroup>
 
   <ItemGroup>
