@@ -137,6 +137,8 @@ public class WebWindowForm : Form
                         settings.OnFilesDrop(msg.Text ?? "", msg.Move, filesDropPathes);
                     }
                 };
+
+            webView.NavigationCompleted += (s, e) => settings.OnStarted?.Invoke();
             
             webView.CoreWebView2.ContainsFullScreenElementChanged += (objs, args) =>
             {
