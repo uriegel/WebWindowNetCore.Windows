@@ -17,7 +17,7 @@ WebView
     .FormCreating(FormCreation)
     .Title("WebView Test")
     .ResourceIcon("icon")
-    .SaveBounds()
+    .OnClosing(() => true)
     .DefaultContextMenuEnabled()    
     .OnFilesDrop((id, move, pathes) => 
     {

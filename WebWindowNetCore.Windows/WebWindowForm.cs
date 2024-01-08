@@ -9,6 +9,7 @@ using CsTools.Extensions;
 using WebWindowNetCore.Data;
 
 using static AspNetExtensions.Core;
+using System.ComponentModel;
 
 namespace WebWindowNetCore;
 
@@ -36,6 +37,7 @@ public class WebWindowForm : Form
     {
         noTitlebar = settings.WithoutNativeTitlebar == true;
         OnScriptAction = settings.OnScriptAction;
+        CanClose = settings.CanClose;
 
         FormClosing += (s, e) => 
             s.SideEffectIf(WindowState == FormWindowState.Normal,
@@ -226,6 +228,12 @@ public class WebWindowForm : Form
         }
     }
 
+    protected override void OnClosing(CancelEventArgs e)
+    {
+        e.Cancel = CanClose != null && !CanClose();
+        base.OnClosing(e);
+    }
+
     protected override void WndProc(ref Message m)
     {
         if (DesignMode || !noTitlebar)
@@ -268,6 +276,7 @@ public class WebWindowForm : Form
     }
 
     readonly Action<int, string?>? OnScriptAction;
+    readonly Func<bool>? CanClose;
 
     readonly Subject<int> dropFinishedSubject = new();
 
