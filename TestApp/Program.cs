@@ -23,7 +23,7 @@ WebView
     {
         var pa = pathes;
     })
-    .DebugUrl("http://127.0.0.1:20000")
+    .DebugUrl("http://localhost:20000/web/index.html")
     //.DebugUrl("https://google.de")
     //.Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
     .ConfigureHttp(http => http
