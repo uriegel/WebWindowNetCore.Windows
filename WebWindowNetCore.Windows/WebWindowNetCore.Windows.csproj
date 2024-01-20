@@ -6,9 +6,9 @@
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>5.6.1</Version>
-		<FileVersion>5.6.1.0</FileVersion>
-		<AssemblyVersion>5.6.1.0</AssemblyVersion>
+		<Version>5.6.2</Version>
+		<FileVersion>5.6.2.0</FileVersion>
+		<AssemblyVersion>5.6.2.0</AssemblyVersion>
 		<Authors>Uwe Riegel</Authors>
 		<Company>Uwe Riegel</Company>
 		<Copyright>Uwe Riegel</Copyright>
@@ -41,7 +41,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2210.55" />
 		<PackageReference Include="ClrWinApi" Version="2.4.0" />
-		<PackageReference Include="WebWindowNetCore" Version="9.6.2" />
+		<PackageReference Include="WebWindowNetCore" Version="9.6.3" />
 	</ItemGroup>
 
   	<ItemGroup>
