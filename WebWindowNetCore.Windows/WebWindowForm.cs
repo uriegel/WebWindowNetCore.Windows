@@ -39,11 +39,19 @@ public class WebWindowForm : Form
         OnScriptAction = settings.OnScriptAction;
         CanClose = settings.CanClose;
 
-        FormClosing += (s, e) => 
-            s.SideEffectIf(WindowState == FormWindowState.Normal,
-                _ => (Data.Bounds.Retrieve(settings.AppId, new Bounds(null, null, settings.Width, settings.Height, null))
-                        with { Width = Width, Height = Height })
-                        .Save(settings.AppId));
+        if (settings.SaveBounds)
+            FormClosing += (s, e) => 
+                (Data.Bounds.Retrieve(settings.AppId, new Bounds(null, null, settings.Width, settings.Height, null))
+                    with 
+                    { 
+                        X = WindowState == FormWindowState.Maximized ? RestoreBounds.Location.X : Location.X,
+                        Y = WindowState == FormWindowState.Maximized ? RestoreBounds.Location.Y : Location.Y,
+                        Width = WindowState == FormWindowState.Maximized ? RestoreBounds.Size.Width : Size.Width, 
+                        Height = WindowState == FormWindowState.Maximized ? RestoreBounds.Size.Height : Size.Height, 
+                        IsMaximized = WindowState == FormWindowState.Maximized
+                    })
+                    .Save(settings.AppId);
+
         if (!noTitlebar) 
             Text = settings.Title;
         else if (Environment.OSVersion.Version.Build < 22000)
@@ -79,7 +87,15 @@ public class WebWindowForm : Form
         // Form1
         // 
         //this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-        
+
+        Load += (s, e) =>
+        {
+            var bounds = Data.Bounds.Retrieve(settings.AppId!, new Bounds(null, null, settings.Width, settings.Height, null));
+            if (bounds.X.HasValue && bounds.Y.HasValue && Screen.AllScreens.Any(s => s.WorkingArea.IntersectsWith(new Rectangle(bounds.X.Value, bounds.Y.Value, Size.Width, Size.Height))))
+                Location = new(bounds.X.Value, bounds.Y.Value);
+            WindowState = bounds.IsMaximized == true ? FormWindowState.Maximized : FormWindowState.Normal;
+        };
+
         if (settings.ResourceIcon != null)
             Icon = new Icon(Resources.Get(settings.ResourceIcon)!);
 
@@ -87,8 +103,10 @@ public class WebWindowForm : Form
         AutoScaleMode = AutoScaleMode.Font;
 
         var bounds = Data.Bounds.Retrieve(settings.AppId!, new Bounds(null, null, settings.Width, settings.Height, null));
-        Width = bounds.Width ?? 800;
-        Height = bounds.Height ?? 600;
+        if (bounds.X.HasValue && bounds.Y.HasValue)
+            Location = new(bounds.X.Value, bounds.Y.Value);
+        Size = new(bounds.Width ?? 800, bounds.Height ?? 600);
+        WindowState = bounds.IsMaximized == true ? FormWindowState.Maximized : FormWindowState.Normal;
         
         Controls.Add(webView);
         Name = "WebWindow";
@@ -162,7 +180,6 @@ public class WebWindowForm : Form
                 
             webView.Source = new Uri(WebViewSettings.GetUri(settings));
 
-            WindowState = FormWindowState.Normal;
             initialized = true;
             await webView.ExecuteScriptAsync(
                 $$"""
