@@ -35,10 +35,10 @@ WebView
         var s = state;
     })
     .SaveBounds()
-    .DebugUrl("http://localhost:20000/web/index.html")
+    //.DebugUrl("http://localhost:20000/web/index.html")
     //.DebugUrl("http://localhost:3000")
     //.DebugUrl("https://google.de")
-    //.Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
+    .Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
     .ConfigureHttp(http => http
         .ResourceWebroot("webroot", "/web")
         .UseSse("sse/test", sseEventSource)
