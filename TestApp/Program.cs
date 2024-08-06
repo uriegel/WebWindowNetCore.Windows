@@ -23,7 +23,8 @@ WebView
     {
         var pa = pathes;
     })
-    .DebugUrl("http://localhost:20000/web/index.html")
+    .DebugUrl("https://cas-ew-caesar-3.ub2.cae.local/client/timio.html")
+    //.DebugUrl("http://localhost:20000/web/index.html")
     //.DebugUrl("https://google.de")
     //.Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
     .ConfigureHttp(http => http

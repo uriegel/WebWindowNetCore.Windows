@@ -142,6 +142,7 @@ public class WebWindowForm : Form
             await webView.EnsureCoreWebView2Async(enf);
             webView.CoreWebView2.AddHostObjectToScript("Callback", new Callback(this));
             webView.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
+            webView.CoreWebView2.Settings.IsPasswordAutosaveEnabled = true;
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = settings.DefaultContextMenuEnabled;
             webView.CoreWebView2.WindowCloseRequested += (obj, e) => Close();
 
